@@ -1,13 +1,14 @@
 import React, { useEffect, useState  , useContext} from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getOrders } from '../api/api';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { useCallback } from 'react';
 import { StoreContext } from '../context/StoreContext';
 
 export default function OrdersScreen() {
     const [orders, setOrders] = useState([]);
+    const navigation = useNavigation();
 
     const fetchOrders = async () => {
         const user_id = parseInt(await AsyncStorage.getItem("user_id"));
@@ -21,11 +22,16 @@ export default function OrdersScreen() {
         }, [])
     );
 
+    const handlePress = (order_id) => {
+        navigation.navigate("Invoice", { order_id }); // Navigate to InvoiceScreen
+    };
+
     const renderOrder = ({ item }) => (
-        <View style={styles.orderCard}>
+        <TouchableOpacity onPress={() => handlePress(item.order_id)} style={styles.orderCard}>
+            <Text style={styles.orderDate}>Placed on: {new Date(item.created_at).toLocaleDateString()}</Text>
             <Text style={styles.orderTitle}>Order #{item.order_id}</Text>
             <Text style={styles.orderAmount}>Total: ₹{item.total_amount}</Text>
-        </View>
+        </TouchableOpacity>
     );
 
     return (

@@ -7,37 +7,15 @@ import { getStores } from '../api/api'; // Your API to fetch stores
 import QRScancreen from '../screens/QRScanScreen'
 import CartScreen from '../screens/CartScreen'
 import OrdersScreen from '../screens/OrdersScreen'
+import AccountScreen from '../screens/AccountScreen';
 import { StoreContext } from '../context/StoreContext'; 
 
 const Tab = createBottomTabNavigator();
 
 function HomeScreen({ navigation }) {
     const [stores, setStores] = useState([]);
-    // const [selectedStore, setSelectedStore] = useState(null);
     const [loading, setLoading] = useState(true);
     const { selectedStoreId, changeStore } = useContext(StoreContext); 
-
-    // useEffect(() => {
-    //     (async () => {
-    //         try {
-    //             const res = await getStores();
-    //             setStores(res.data);
-    //             if (res.data.length > 0) {
-    //                 setSelectedStore(res.data[0].id);
-    //                 await AsyncStorage.setItem('store_id', String(res.data[0].id));
-    //             }
-    //         } catch (err) {
-    //             console.error('Error fetching stores', err);
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     })();
-    // }, []);
-
-    // const handleStoreChange = async (storeId) => {
-    //     setSelectedStore(storeId);
-    //     await AsyncStorage.setItem('store_id', String(storeId));
-    // };
 
 
     useEffect(() => {
@@ -148,6 +126,18 @@ export default function HomeTabNavigator() {
               <Text style={[styles.icon, { color: focused ? '#C9FF9A' : '#FFFFFF' }]}>📦</Text>
               <Text style={[styles.label, { color: focused ? '#C9FF9A' : '#FFFFFF' }]}>Orders</Text>
             </View>
+                    ),
+                }}
+            />
+            <Tab.Screen
+                name="Account"
+                component={AccountScreen}
+                options={{
+                    tabBarIcon: ({ focused }) => (
+                        <View style={styles.tabIconContainer}>
+                            <Text style={[styles.icon, { color: focused ? '#C9FF9A' : '#FFFFFF' }]}>👤</Text>
+                            <Text style={[styles.label, { color: focused ? '#C9FF9A' : '#FFFFFF' }]}>Account</Text>
+                        </View>
                     ),
                 }}
             />

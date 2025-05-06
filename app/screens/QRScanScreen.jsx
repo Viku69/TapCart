@@ -8,43 +8,34 @@ export default function QRScanScreen({ navigation }) {
   const { requestPermission } = useCameraPermission();
   const device = useCameraDevice('back');
 
-  const [latestScannedData, setLatestScannedData] = useState(null);
-  const hasScannedRef = useRef(false); // ✅ useRef instead of state
+  const [productData, setProductData] = useState(null);
+  const hasScannedRef = useRef(false);
 
   useEffect(() => {
     requestPermission();
   }, []);
 
-  const handleQRCodeScanned = async (qrValue: string) => {
+  const handleQRCodeScanned = async (qrValue) => {
     try {
-      console.log("entered to find and add");
-      const userIdStr = await AsyncStorage.getItem('user_id');
-      const user_id = parseInt(userIdStr || '0');
-
+      console.log("Scanning QR:", qrValue);
       const res = await getProductByQR(qrValue);
-      await addToCart(user_id, res.data.id, 1);
-
-      Alert.alert('Added', `${res.data.name} added to cart`, [
-        { text: 'OK', onPress: () => navigation.navigate('Cart') },
-      ]);
+      setProductData(res.data); // Show product card
     } catch (error) {
       Alert.alert('Failed', 'Invalid QR code');
     } finally {
-      hasScannedRef.current = true; // ✅ prevent further scans
+      hasScannedRef.current = true;
       setTimeout(() => {
-        hasScannedRef.current = false; // allow re-scanning after delay
+        hasScannedRef.current = false;
       }, 3000);
     }
   };
 
   const codeScanner = useCodeScanner({
     codeTypes: ['qr', 'ean-13'],
-    onCodeScanned: (codes: Code[]) => {
+    onCodeScanned: (codes) => {
       const qrValue = codes[0]?.value;
       if (qrValue && !hasScannedRef.current) {
-        hasScannedRef.current = true; // immediately block further scans
-        setLatestScannedData(qrValue);
-        console.log("Scanning:", qrValue);
+        hasScannedRef.current = true;
         handleQRCodeScanned(qrValue);
       }
     },
@@ -58,6 +49,24 @@ export default function QRScanScreen({ navigation }) {
     );
   }
 
+  const handleAddToCart = async () => {
+    try {
+      const userIdStr = await AsyncStorage.getItem('user_id');
+      const user_id = parseInt(userIdStr || '0');
+      await addToCart(user_id, productData.id, 1);
+
+      Alert.alert('Added', `${productData.name} added to cart`, [
+        // { text: 'OK', onPress: () => navigation.navigate('Cart') },
+        {text : 'OK'}
+        
+      ]);
+
+      setProductData(null); // reset card after adding
+    } catch (err) {
+      Alert.alert('Error', 'Could not add product');
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Camera
@@ -69,9 +78,16 @@ export default function QRScanScreen({ navigation }) {
       <View style={styles.overlay}>
         <Text style={styles.text}>Scan QR Code</Text>
       </View>
-      {latestScannedData && (
-        <View>
-          <Text style={styles.text}>{latestScannedData}</Text>
+
+      {productData && (
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>{productData.name}</Text>
+          <Text style={styles.cardText}>Price: ₹{productData.price}</Text>
+          <Text style={styles.cardText}>Description: {productData.description}</Text>
+
+          <Text style={styles.button} onPress={handleAddToCart}>
+            Add to Cart
+          </Text>
         </View>
       )}
     </View>
@@ -98,6 +114,37 @@ const styles = StyleSheet.create({
   text: {
     color: 'white',
     fontSize: 18,
+    fontWeight: 'bold',
+  },
+  card: {
+    position: 'absolute',
+    bottom: 30,
+    left: 20,
+    right: 20,
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 5,
+  },
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 6,
+  },
+  cardText: {
+    fontSize: 14,
+    marginBottom: 4,
+  },
+  button: {
+    marginTop: 12,
+    padding: 10,
+    backgroundColor: '#4CAF50',
+    color: 'white',
+    textAlign: 'center',
+    borderRadius: 6,
     fontWeight: 'bold',
   },
 });

@@ -9,8 +9,8 @@ import QRScanScreen from './app/screens/QRScanScreen';
 import CartScreen from './app/screens/CartScreen';
 import OrdersScreen from './app/screens/OrdersScreen';
 import RegisterScreen from './app/screens/RegisterScreen';
-
 import { StoreProvider } from './app/context/StoreContext';
+import InvoiceScreen from './app/screens/InvoiceScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -26,6 +26,7 @@ export default function App() {
         <Stack.Screen name="Scan" component={QRScanScreen} />
         <Stack.Screen name="Cart" component={CartScreen} />
         <Stack.Screen name="Orders" component={OrdersScreen} />
+          <Stack.Screen name="Invoice" component={InvoiceScreen} />
       </Stack.Navigator>
     </NavigationContainer>
     </StoreProvider>

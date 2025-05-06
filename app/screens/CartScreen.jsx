@@ -1,41 +1,66 @@
-
-import React, { useEffect, useState , useContext } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Alert, StyleSheet } from 'react-native';
+import React, { useState, useContext } from 'react';
+import {
+    View, Text, FlatList, TouchableOpacity, Alert,
+    StyleSheet, ActivityIndicator
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getCart, checkout, updateCart, removeFromCart } from '../api/api';
-import axios from 'axios';
-import { useFocusEffect } from '@react-navigation/native';
+import {
+    getCart,
+    checkout,
+    updateCart,
+    removeFromCart,
+    getProductById
+} from '../api/api';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { useCallback } from 'react';
 import { StoreContext } from '../context/StoreContext';
 
 export default function CartScreen() {
     const [cart, setCart] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const { selectedStoreId } = useContext(StoreContext);
+
+    const navigation = useNavigation();
 
     const fetchCart = async () => {
+        setLoading(true);
         const user_id = parseInt(await AsyncStorage.getItem("user_id"));
         const res = await getCart(user_id);
-        setCart(res.data);
+
+        const enrichedCart = await Promise.all(res.data.map(async (item) => {
+            try {
+                const productRes = await getProductById(item.product_id);
+                const price = productRes.data.price;
+                const name = productRes.data.name;
+                return {
+                    ...item,
+                    name,
+                    price,
+                    total: price * item.quantity
+                };
+            } catch (error) {
+                console.error(`Error fetching product ${item.product_id}`, error);
+                return { ...item, name: 'Unknown', price: 0, total: 0 };
+            }
+        }));
+
+        setCart(enrichedCart);
+        setLoading(false);
     };
 
-   
-     // 🔥 This runs every time CartScreen is focused
     useFocusEffect(
         useCallback(() => {
             fetchCart();
         }, [])
     );
 
- 
-    const { selectedStoreId } = useContext(StoreContext); // ✅ fetch it here
-
-   console.log('Selected Store ID:', selectedStoreId); // use it anywhere
-
-
     const handleCheckout = async () => {
         const store_id = selectedStoreId;
         const user_id = parseInt(await AsyncStorage.getItem("user_id"));
-        const res = await checkout(user_id , store_id);
-        Alert.alert('Success', `Order #${res.data.order_id} placed`);
+        const res = await checkout(user_id, store_id);
+        // Alert.alert('Success', `Order #${res.data.order_id} placed`);
+        navigation.navigate("Invoice", { order_id: res.data.order_id });
+
         fetchCart();
     };
 
@@ -55,10 +80,14 @@ export default function CartScreen() {
         fetchCart();
     };
 
+    const getCartTotal = () => {
+        return cart.reduce((sum, item) => sum + item.total, 0);
+    };
+
     const renderItem = ({ item }) => (
         <View style={styles.itemContainer}>
-            <Text style={styles.productText}>Product {item.product_id}</Text>
-             <Text style={styles.productText}>Product {item.name}</Text>
+            <Text style={styles.productText}>{item.name}</Text>
+            <Text style={styles.productText}>₹{item.price} x {item.quantity} = ₹{item.total}</Text>
             <View style={styles.controls}>
                 <TouchableOpacity onPress={() => updateQuantity(item.product_id, item.quantity - 1)} style={styles.btn}>
                     <Text style={styles.btnText}>−</Text>
@@ -77,19 +106,35 @@ export default function CartScreen() {
     return (
         <View style={styles.container}>
             <Text style={styles.heading}>🛒 Your Cart</Text>
-            <FlatList
-                data={cart}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={renderItem}
-                ListEmptyComponent={<Text style={styles.empty}>Your cart is empty</Text>}
-            />
-            <TouchableOpacity 
-                style={[styles.checkoutBtn, cart.length === 0 && { backgroundColor: '#ccc' }]} 
-                onPress={handleCheckout} 
-                disabled={cart.length === 0}
-            >
-                <Text style={styles.checkoutText}>Checkout</Text>
-            </TouchableOpacity>
+
+            {loading ? (
+                <ActivityIndicator size="large" color="#5e3ea1" style={{ marginTop: 30 }} />
+            ) : (
+                <>
+                    <FlatList
+                        data={cart}
+                        keyExtractor={(item, index) => index.toString()}
+                        renderItem={renderItem}
+                        ListEmptyComponent={<Text style={styles.empty}>Your cart is empty</Text>}
+                    />
+
+                    {cart.length > 0 && (
+                        <View style={{ marginTop: 10, alignItems: 'flex-end' }}>
+                            <Text style={[styles.productText, { fontSize: 18, fontWeight: 'bold' }]}>
+                                Total: ₹{getCartTotal()}
+                            </Text>
+                        </View>
+                    )}
+
+                    <TouchableOpacity
+                        style={[styles.checkoutBtn, cart.length === 0 && { backgroundColor: '#ccc' }]}
+                        onPress={handleCheckout}
+                        disabled={cart.length === 0}
+                    >
+                        <Text style={styles.checkoutText}>Checkout</Text>
+                    </TouchableOpacity>
+                </>
+            )}
         </View>
     );
 }
@@ -98,7 +143,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
-        backgroundColor: '#f5f0ff', // Light violet background
+        backgroundColor: '#f5f0ff',
     },
     heading: {
         fontSize: 24,

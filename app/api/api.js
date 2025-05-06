@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-    baseURL: 'https://1bc0-103-92-43-35.ngrok-free.app', // Replace with your FastAPI IP address
+    baseURL: 'https://db3c-103-92-43-35.ngrok-free.app', // Replace with your FastAPI IP address
 });
 
 export const registerUser = (mobile, password) =>
@@ -20,3 +20,12 @@ export const updateCart = (user_id, product_id, quantity) =>
 
 export const removeFromCart = (user_id, product_id) =>
     API.delete('/cart/remove', { params: { user_id, product_id } });
+
+export const getProductById = (product_id) =>
+    API.get(`/products/${product_id}`);
+
+export const getOrderItems = (order_id) =>
+    API.get(`/order/${order_id}/items`);
+
+export const getUserMobile = (user_id) => 
+    API.get(`/user/${user_id}`);
