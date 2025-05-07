@@ -1,4 +1,4 @@
-import React, { useEffect, useState , useContext } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -8,35 +8,35 @@ import QRScancreen from '../screens/QRScanScreen'
 import CartScreen from '../screens/CartScreen'
 import OrdersScreen from '../screens/OrdersScreen'
 import AccountScreen from '../screens/AccountScreen';
-import { StoreContext } from '../context/StoreContext'; 
+import { StoreContext } from '../context/StoreContext';
 
 const Tab = createBottomTabNavigator();
 
 function HomeScreen({ navigation }) {
     const [stores, setStores] = useState([]);
     const [loading, setLoading] = useState(true);
-    const { selectedStoreId, changeStore } = useContext(StoreContext); 
+    const { selectedStoreId, changeStore } = useContext(StoreContext);
 
 
     useEffect(() => {
-    (async () => {
-      try {
-        const res = await getStores();
-        setStores(res.data);
-        if (res.data.length > 0 && !selectedStoreId) {
-          changeStore(res.data[0].id); // set default if not set
-        }
-      } catch (err) {
-        console.error('Error fetching stores', err);
-      } finally {
-        setLoading(false);
-      }
-    })();
+        (async () => {
+            try {
+                const res = await getStores();
+                setStores(res.data);
+                if (res.data.length > 0 && !selectedStoreId) {
+                    changeStore(res.data[0].id); // set default if not set
+                }
+            } catch (err) {
+                console.error('Error fetching stores', err);
+            } finally {
+                setLoading(false);
+            }
+        })();
     }, []);
 
-  const handleStoreChange = (storeId) => {
-    changeStore(storeId); // ✅ update context
-  };
+    const handleStoreChange = (storeId) => {
+        changeStore(storeId); // ✅ update context
+    };
 
 
     if (loading) {
@@ -49,9 +49,14 @@ function HomeScreen({ navigation }) {
     }
 
     return (
+
+
         <View style={styles.container}>
-            <Text style={styles.title}>TapCart</Text>
-            <Text style={styles.subtitle}>Select Store</Text>
+            <Text style={styles.title}>👋 Welcome to TapCart</Text>
+            <Text style={styles.subtitle}>
+                Select your nearest store to start scanning and shopping seamlessly.
+            </Text>
+
             <View style={styles.pickerContainer}>
                 <Picker
                     selectedValue={selectedStoreId}
@@ -64,7 +69,29 @@ function HomeScreen({ navigation }) {
                     ))}
                 </Picker>
             </View>
+
+            {selectedStoreId && (
+                <View style={styles.storeInfo}>
+                    <Text style={styles.storeInfoText}>
+                        🏬 Current Store: {stores.find(s => s.id === selectedStoreId)?.name}
+                    </Text>
+                   
+                    <Text style={styles.storeInfoText}>
+                        Location: {stores.find(s => s.id === selectedStoreId)?.location}
+                    </Text>
+                </View>
+            )}
+
+            <View style={styles.infoBox}>
+                <Text style={styles.infoHeader}>✨ What's New</Text>
+                <Text style={styles.infoText}>
+                    - Scan products quickly from your camera{'\n'}
+                    - Seamless checkout experience{'\n'}
+                    - Track your past orders anytime
+                </Text>
+            </View>
         </View>
+
     );
 }
 
@@ -86,11 +113,12 @@ export default function HomeTabNavigator() {
                 component={HomeScreen}
                 options={{
                     tabBarIcon: ({ focused }) => (
-                       <View style={styles.tabIconContainer}>
-              <Text style={[styles.icon, { color: focused ? '#C9FF9A' : '#FFFFFF' }]}>🏠</Text>
-              <Text style={[styles.label, { color: focused ? '#C9FF9A' : '#FFFFFF' }]}>Home</Text>
-            </View>
+                        <View style={styles.tabIconContainer}>
+                            <Text style={[styles.icon, { color: focused ? '#C9FF9A' : '#FFFFFF' }]}>🏠</Text>
+                            <Text style={[styles.label, { color: focused ? '#C9FF9A' : '#FFFFFF' }]}>Home</Text>
+                        </View>
                     ),
+                    
                 }}
             />
             <Tab.Screen
@@ -98,10 +126,10 @@ export default function HomeTabNavigator() {
                 component={QRScancreen} // Replace with your Scan component
                 options={{
                     tabBarIcon: ({ focused }) => (
-                         <View style={styles.tabIconContainer}>
-              <Text style={[styles.icon, { color: focused ? '#C9FF9A' : '#FFFFFF' }]}>📷</Text>
-              <Text style={[styles.label, { color: focused ? '#C9FF9A' : '#FFFFFF' }]}>Scan</Text>
-            </View>
+                        <View style={styles.tabIconContainer}>
+                            <Text style={[styles.icon, { color: focused ? '#C9FF9A' : '#FFFFFF' }]}>📷</Text>
+                            <Text style={[styles.label, { color: focused ? '#C9FF9A' : '#FFFFFF' }]}>Scan</Text>
+                        </View>
                     ),
                 }}
             />
@@ -111,9 +139,9 @@ export default function HomeTabNavigator() {
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <View style={styles.tabIconContainer}>
-              <Text style={[styles.icon, { color: focused ? '#C9FF9A' : '#FFFFFF' }]}>🛒</Text>
-              <Text style={[styles.label, { color: focused ? '#C9FF9A' : '#FFFFFF' }]}>Cart</Text>
-            </View>
+                            <Text style={[styles.icon, { color: focused ? '#C9FF9A' : '#FFFFFF' }]}>🛒</Text>
+                            <Text style={[styles.label, { color: focused ? '#C9FF9A' : '#FFFFFF' }]}>Cart</Text>
+                        </View>
                     ),
                 }}
             />
@@ -122,10 +150,10 @@ export default function HomeTabNavigator() {
                 component={OrdersScreen} // Replace with your Orders component
                 options={{
                     tabBarIcon: ({ focused }) => (
-                         <View style={styles.tabIconContainer}>
-              <Text style={[styles.icon, { color: focused ? '#C9FF9A' : '#FFFFFF' }]}>📦</Text>
-              <Text style={[styles.label, { color: focused ? '#C9FF9A' : '#FFFFFF' }]}>Orders</Text>
-            </View>
+                        <View style={styles.tabIconContainer}>
+                            <Text style={[styles.icon, { color: focused ? '#C9FF9A' : '#FFFFFF' }]}>📦</Text>
+                            <Text style={[styles.label, { color: focused ? '#C9FF9A' : '#FFFFFF' }]}>Orders</Text>
+                        </View>
                     ),
                 }}
             />
@@ -174,25 +202,60 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         overflow: 'hidden',
         marginBottom: 30,
-        paddingBottom:5,
-        paddingHorizontal:10,
+        paddingBottom: 5,
+        paddingHorizontal: 10,
     },
     picker: {
         height: 70,
         width: '100%',
         color: '#333'
     },
+    storeInfo: {
+        backgroundColor: '#f0edff',
+        padding: 12,
+        borderRadius: 10,
+        marginTop: 10,
+        marginBottom: 20,
+        alignItems: 'center',
+    },
+
+    storeInfoText: {
+        fontSize: 15,
+        fontWeight: '500',
+        color: '#2D1066',
+    },
+
+    infoBox: {
+        backgroundColor: '#fff9ec',
+        padding: 15,
+        borderRadius: 10,
+        elevation: 2,
+    },
+
+    infoHeader: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#ff9f00',
+        marginBottom: 5,
+    },
+
+    infoText: {
+        fontSize: 14,
+        color: '#333',
+        lineHeight: 22,
+    },
+
     tabIconContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingTop:18
-  },
-  icon: {
-    fontSize: 12,
-  },
-  label: {
-    fontSize: 11,
-    fontWeight: '600',
-    marginTop: 2,
-  },
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingTop: 18
+    },
+    icon: {
+        fontSize: 12,
+    },
+    label: {
+        fontSize: 11,
+        fontWeight: '600',
+        marginTop: 2,
+    },
 });

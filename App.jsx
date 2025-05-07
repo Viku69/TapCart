@@ -11,13 +11,27 @@ import OrdersScreen from './app/screens/OrdersScreen';
 import RegisterScreen from './app/screens/RegisterScreen';
 import { StoreProvider } from './app/context/StoreContext';
 import InvoiceScreen from './app/screens/InvoiceScreen';
+import { DefaultTheme } from '@react-navigation/native';
 
 const Stack = createNativeStackNavigator();
+
+const LightTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: '#FFFFFF',   // Optional: make sure the background is white
+    card: '#FFFFFF',         // for header or tab backgrounds
+    text: '#000000',         // text color
+    border: '#E0E0E0',       // subtle borders
+    notification: '#7D5FFF'  // tab bar badge color
+  },
+};
+
 
 export default function App() {
   return (
    <StoreProvider> 
-    <NavigationContainer>
+      <NavigationContainer theme={LightTheme}>
       <Stack.Navigator initialRouteName="Login">
         <Stack.Screen name="HomeTab" component={HomeTabNavigator} />
         <Stack.Screen name="Register" component={RegisterScreen} />

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-    baseURL: 'https://db3c-103-92-43-35.ngrok-free.app', // Replace with your FastAPI IP address
+    baseURL: 'https://80a7-103-92-43-35.ngrok-free.app',
 });
 
 export const registerUser = (mobile, password) =>
