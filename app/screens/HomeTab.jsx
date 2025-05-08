@@ -9,6 +9,7 @@ import CartScreen from '../screens/CartScreen'
 import OrdersScreen from '../screens/OrdersScreen'
 import AccountScreen from '../screens/AccountScreen';
 import { StoreContext } from '../context/StoreContext';
+import { Horse, Heart, Cube, House, Scan, Basket, User, ListChecks, Storefront, MapPin, ShoppingCart, ShoppingBag } from 'phosphor-react-native';
 
 const Tab = createBottomTabNavigator();
 
@@ -72,13 +73,23 @@ function HomeScreen({ navigation }) {
 
             {selectedStoreId && (
                 <View style={styles.storeInfo}>
-                    <Text style={styles.storeInfoText}>
-                        🏬 Current Store: {stores.find(s => s.id === selectedStoreId)?.name}
-                    </Text>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', gap:'10%' }}>
+                        
+                        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                            <Storefront color="#7D5FFF" weight="fill" size={32} />
+                            <Text style={styles.storeInfoText}>
+                                {stores.find(s => s.id === selectedStoreId)?.name}
+                            </Text>
+                        </View>
+                        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                            <MapPin color="#7D5FFF" weight="fill" size={32} />
+                            <Text style={styles.storeInfoText}>
+                                {stores.find(s => s.id === selectedStoreId)?.location}
+                            </Text>
+                        </View>
+
+                        </View>
                    
-                    <Text style={styles.storeInfoText}>
-                        Location: {stores.find(s => s.id === selectedStoreId)?.location}
-                    </Text>
                 </View>
             )}
 
@@ -103,6 +114,7 @@ export default function HomeTabNavigator() {
                 tabBarStyle: {
                     backgroundColor: '#2D1066',
                     height: 80,
+                    justifyContent: 'space-around'
                 },
                 tabBarLabel: () => null, // Hide labels
                 headerShown: false,
@@ -114,11 +126,11 @@ export default function HomeTabNavigator() {
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <View style={styles.tabIconContainer}>
-                            <Text style={[styles.icon, { color: focused ? '#C9FF9A' : '#FFFFFF' }]}>🏠</Text>
+                            <House style={[styles.icon, { color: focused ? '#C9FF9A' : '#FFFFFF' }]} />
                             <Text style={[styles.label, { color: focused ? '#C9FF9A' : '#FFFFFF' }]}>Home</Text>
                         </View>
                     ),
-                    
+
                 }}
             />
             <Tab.Screen
@@ -127,7 +139,7 @@ export default function HomeTabNavigator() {
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <View style={styles.tabIconContainer}>
-                            <Text style={[styles.icon, { color: focused ? '#C9FF9A' : '#FFFFFF' }]}>📷</Text>
+                            <Scan style={[styles.icon, { color: focused ? '#C9FF9A' : '#FFFFFF' }]} />
                             <Text style={[styles.label, { color: focused ? '#C9FF9A' : '#FFFFFF' }]}>Scan</Text>
                         </View>
                     ),
@@ -139,7 +151,7 @@ export default function HomeTabNavigator() {
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <View style={styles.tabIconContainer}>
-                            <Text style={[styles.icon, { color: focused ? '#C9FF9A' : '#FFFFFF' }]}>🛒</Text>
+                            <ShoppingCart style={[styles.icon, { color: focused ? '#C9FF9A' : '#FFFFFF' }]} />
                             <Text style={[styles.label, { color: focused ? '#C9FF9A' : '#FFFFFF' }]}>Cart</Text>
                         </View>
                     ),
@@ -151,7 +163,7 @@ export default function HomeTabNavigator() {
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <View style={styles.tabIconContainer}>
-                            <Text style={[styles.icon, { color: focused ? '#C9FF9A' : '#FFFFFF' }]}>📦</Text>
+                            <ShoppingBag style={[styles.icon, { color: focused ? '#C9FF9A' : '#FFFFFF' }]} />
                             <Text style={[styles.label, { color: focused ? '#C9FF9A' : '#FFFFFF' }]}>Orders</Text>
                         </View>
                     ),
@@ -163,7 +175,7 @@ export default function HomeTabNavigator() {
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <View style={styles.tabIconContainer}>
-                            <Text style={[styles.icon, { color: focused ? '#C9FF9A' : '#FFFFFF' }]}>👤</Text>
+                            <User style={[styles.icon, { color: focused ? '#C9FF9A' : '#FFFFFF' }]} />
                             <Text style={[styles.label, { color: focused ? '#C9FF9A' : '#FFFFFF' }]}>Account</Text>
                         </View>
                     ),
@@ -220,8 +232,8 @@ const styles = StyleSheet.create({
     },
 
     storeInfoText: {
-        fontSize: 15,
-        fontWeight: '500',
+        fontSize: 25,
+        fontWeight: '600',
         color: '#2D1066',
     },
 
@@ -247,14 +259,15 @@ const styles = StyleSheet.create({
 
     tabIconContainer: {
         alignItems: 'center',
-        justifyContent: 'center',
-        paddingTop: 18
+        justifyContent: 'space-between',
+        paddingTop: 18,
+        marginTop: 10
     },
     icon: {
-        fontSize: 12,
+        fontSize: 5,
     },
     label: {
-        fontSize: 11,
+        fontSize: 8,
         fontWeight: '600',
         marginTop: 2,
     },

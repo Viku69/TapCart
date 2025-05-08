@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ActivityIndicator, FlatList } from 'react-nativ
 import { getOrderItems } from '../api/api';
 import Barcode from 'react-native-barcode-svg';
 import QRCode from 'react-native-qrcode-svg';
+import { Invoice, Package } from 'phosphor-react-native';
 
 export default function InvoiceScreen({ route }) {
     const { order_id } = route.params;
@@ -38,7 +39,11 @@ export default function InvoiceScreen({ route }) {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.heading}>🧾 Invoice</Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: '4%', marginBottom: 20, }}>
+                <Invoice color="#7D5FFF" weight="fill" size={32} />
+                <Text style={styles.heading}>Invoice</Text>
+            </View>
+           
             {loading ? (
                 <ActivityIndicator size="large" color="#7a5fed" />
             ) : (
@@ -51,7 +56,7 @@ export default function InvoiceScreen({ route }) {
 
                     <View style={{ alignItems: 'center', marginTop: 30 }}>
                         <Text style={{ fontSize: 16, marginBottom: 10, color: '#5e3ea1' }}>
-                            Scan this at the exit
+                            Scan this QR at the exit
                         </Text>
                         <QRCode value={order_id} size={100} />
                     </View>
@@ -74,7 +79,6 @@ const styles = StyleSheet.create({
     heading: {
         fontSize: 24,
         fontWeight: 'bold',
-        marginBottom: 15,
         color: '#5e3ea1',
         textAlign: 'center',
     },

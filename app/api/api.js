@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-    baseURL: 'https://80a7-103-92-43-35.ngrok-free.app',
+    baseURL: 'https://61b1-103-214-60-19.ngrok-free.app',
 });
 
 export const registerUser = (mobile, password) =>

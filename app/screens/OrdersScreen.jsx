@@ -5,6 +5,7 @@ import { getOrders } from '../api/api';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { useCallback } from 'react';
 import { StoreContext } from '../context/StoreContext';
+import { Package, UserCircleDashed } from 'phosphor-react-native';
 
 export default function OrdersScreen() {
     const [orders, setOrders] = useState([]);
@@ -36,7 +37,10 @@ export default function OrdersScreen() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.header}>📦 My Orders</Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: '5%', marginBottom: 20, }}>
+                <Package color="#7D5FFF" weight="fill" size={32} />
+                <Text style={styles.header}>My Orders</Text>
+            </View>
             <FlatList
                 data={orders}
                 keyExtractor={(item, index) => index.toString()}
@@ -58,7 +62,6 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: '700',
         color: '#2D1066',
-        marginBottom: 20,
         textAlign: 'center',
     },
     orderCard: {

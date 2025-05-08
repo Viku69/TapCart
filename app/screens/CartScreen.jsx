@@ -14,6 +14,7 @@ import {
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { useCallback } from 'react';
 import { StoreContext } from '../context/StoreContext';
+import { Invoice, ShoppingCart, Trash } from 'phosphor-react-native';
 
 export default function CartScreen() {
     const [cart, setCart] = useState([]);
@@ -97,7 +98,7 @@ export default function CartScreen() {
                     <Text style={styles.btnText}>+</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => handleRemove(item.product_id)} style={styles.deleteBtn}>
-                    <Text style={styles.deleteText}>🗑️</Text>
+                    <Trash color="red" weight="fill" size={28} />
                 </TouchableOpacity>
             </View>
         </View>
@@ -105,7 +106,10 @@ export default function CartScreen() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.heading}>🛒 Your Cart</Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: '4%', marginBottom: 20, }}>
+                <ShoppingCart color="#7D5FFF" weight="fill" size={32} />
+                <Text style={styles.heading}>Invoice</Text>
+            </View>
 
             {loading ? (
                 <ActivityIndicator size="large" color="#5e3ea1" style={{ marginTop: 30 }} />
@@ -148,7 +152,6 @@ const styles = StyleSheet.create({
     heading: {
         fontSize: 24,
         fontWeight: 'bold',
-        marginBottom: 15,
         color: '#5e3ea1',
         textAlign: 'center',
     },
