@@ -108,7 +108,7 @@ export default function CartScreen() {
         <View style={styles.container}>
             <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: '4%', marginBottom: 20, }}>
                 <ShoppingCart color="#7D5FFF" weight="fill" size={32} />
-                <Text style={styles.heading}>Invoice</Text>
+                <Text style={styles.heading}>My Cart</Text>
             </View>
 
             {loading ? (
