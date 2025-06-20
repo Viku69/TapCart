@@ -6,7 +6,7 @@
 
 ## 📱 Features
 
-- 🔐 Mobile number login with OTP verification
+- 🔐 Mobile number login with Password
 - 🏬 Store selection screen (persisted using Context API)
 - 📷 QR code scanning via mobile camera
 - 🛒 Cart management with add/remove functionality
